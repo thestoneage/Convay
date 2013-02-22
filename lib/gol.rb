@@ -2,26 +2,22 @@
 class GameOfLife
   attr_reader :generation, :frame
 
-  def initialize(seed)
+  def initialize(seed, generation = 0)
     raise ArgumentError unless seed.is_a?(Array)
     raise ArgumentError unless seed.all? { |row| row.is_a? Array }
     raise ArgumentError unless seed.all? { |row| row.all? {|cell| cell == true or cell == false } }
     raise ArgumentError unless seed.all? { |row| row.size == seed[0].size }
-    @generation = 0
-    @frame = []
-    seed.each { |row| @frame << row.clone }
+    @generation = generation
+    @frame = seed
+  end
+
+  def evolve
+    GameOfLife.new(compute_next_frame, @generation + 1)
   end
 
   def evolve!
     @generation += 1
-    next_frame = []
-    @frame.each { |row| next_frame << row.clone }
-    x_size.times do |x|
-      y_size.times do |y|
-        next_frame[x][y] = will_live?(x, y)
-      end
-    end
-    @frame = next_frame
+    @frame = compute_next_frame
     self
   end
 
@@ -56,6 +52,19 @@ class GameOfLife
       end
     end
     nbs
+  end
+
+  private
+
+  def compute_next_frame
+    next_frame = []
+    @frame.each { |row| next_frame << row.clone }
+    x_size.times do |x|
+      y_size.times do |y|
+        next_frame[x][y] = will_live?(x, y)
+      end
+    end
+    next_frame
   end
 
 end
