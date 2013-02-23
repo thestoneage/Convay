@@ -27,6 +27,13 @@ describe 'GameOfLife' do
       GameOfLife.new([[false]]).generation.must_equal 0
     end
 
+    it 'must duplicate the seed, so that changes to the origin do not harm the Object' do
+      seed = [[false]]
+      life = GameOfLife.new(seed)
+      seed[0][0]=true
+      life.frame.wont_equal seed
+    end
+
     it 'the frame must be equal to the seed' do
       seed = [[false, true], [true, false]]
       GameOfLife.new(seed).frame.must_equal seed

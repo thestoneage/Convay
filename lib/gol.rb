@@ -8,7 +8,8 @@ class GameOfLife
     raise ArgumentError unless seed.all? { |row| row.all? {|cell| cell == true or cell == false } }
     raise ArgumentError unless seed.all? { |row| row.size == seed[0].size }
     @generation = generation
-    @frame = seed
+    @frame = []
+    seed.each { |row| @frame << row.dup }
   end
 
   def evolve
