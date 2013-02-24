@@ -23,33 +23,33 @@ class GameOfLife
   end
 
   def x_size
-    @frame.size
-  end
-
-  def y_size
     @frame.first.size
   end
 
-  def alive?(row, column)
-    @frame[row][column]
+  def y_size
+    @frame.size
   end
 
-  def will_live?(row, column)
-    n = neighbors(row, column).count(true)
+  def alive?(x, y)
+    @frame[y][x]
+  end
+
+  def will_live?(x, y)
+    n = neighbors(x, y).count(true)
     if (n == 3)
       return true
-    elsif (n == 2 and alive?(row, column))
+    elsif (n == 2 and alive?(x, y))
       return true
     else
       return false
     end
   end
 
-  def neighbors(row, column)
+  def neighbors(x, y)
     nbs = []
-    ([0,(row - 1)].max..[(row + 1),x_size-1].min).each do |x|
-      ([0,(column - 1)].max..[(column + 1),y_size-1].min).each do |y|
-        nbs << alive?(x, y) unless (x==row and y==column)
+    ([0,(x - 1)].max..[(x + 1),x_size-1].min).each do |xi|
+      ([0,(y - 1)].max..[(y + 1),y_size-1].min).each do |yi|
+        nbs << alive?(xi, yi) unless (xi == x and yi == y)
       end
     end
     nbs
@@ -58,11 +58,10 @@ class GameOfLife
   private
 
   def compute_next_frame
-    next_frame = []
-    @frame.each { |row| next_frame << row.clone }
+    next_frame = Array.new(@frame.size) { Array.new(@frame.first.size, false) }
     x_size.times do |x|
       y_size.times do |y|
-        next_frame[x][y] = will_live?(x, y)
+        next_frame[y][x] = will_live?(x, y)
       end
     end
     next_frame
