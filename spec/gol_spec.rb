@@ -31,12 +31,12 @@ describe 'GameOfLife' do
       seed = [[false]]
       life = GameOfLife.new(seed)
       seed[0][0]=true
-      life.frame.wont_equal seed
+      life.alive?(0, 0).must_equal false
     end
 
     it 'the frame must be equal to the seed' do
       seed = [[false, true], [true, false]]
-      GameOfLife.new(seed).frame.must_equal seed
+      GameOfLife.new(seed).value.must_equal seed
     end
 
     it 'the number of columns and rows is present' do
@@ -50,11 +50,11 @@ describe 'GameOfLife' do
 
     it 'has a method which returns an Array of neighbors of a cell' do
       @gol3x3.neighbors(1,1).size.must_equal 8
-      @gol3x3.neighbors(1,1).must_equal [true, false, true, false, false, true, false, false]
+      @gol3x3.neighbors(1,1).map { |x| x.alive? }.must_equal [true, false, true, false, false, true, false, false]
       @gol3x3.neighbors(0,1).size.must_equal 5
-      @gol3x3.neighbors(0,1).must_equal [true, true, false, true, false]
+      @gol3x3.neighbors(0,1).map { |x| x.alive? }.must_equal [true, true, false, true, false]
       @gol3x3.neighbors(0,0).size.must_equal 3
-      @gol3x3.neighbors(0,0).must_equal [false, false, true]
+      @gol3x3.neighbors(0,0).map { |x| x.alive? }.must_equal [false, false, true]
     end
 
     it 'will obey to rule #1' do
@@ -103,16 +103,16 @@ describe 'GameOfLife' do
 
     it 'still live Block will stay the same' do
       seed = [[false]*4,[false, true, true, false],[false, true, true, false], [false]*4]
-      #GameOfLife.new(seed).evolve.frame.must_equal seed
-      GameOfLife.new(seed).evolve!.frame.must_equal seed
+      GameOfLife.new(seed).evolve.value.must_equal seed
+      GameOfLife.new(seed).evolve!.value.must_equal seed
     end
 
     it 'occilator blinker will evolve' do
       state1 = [[false]*5, [false]*5, [false, true, true, true, false], [false]*5, [false]*5]
       state2 =[[false]*5, [false, false, true, false, false], [false, false, true, false, false],
                [false, false, true, false, false], [false]*5]
-      #GameOfLife.new(state1).evolve!.frame.must_equal state2
-      GameOfLife.new(state2).evolve!.frame.must_equal state1
+      GameOfLife.new(state1).evolve!.value.must_equal state2
+      GameOfLife.new(state2).evolve!.value.must_equal state1
     end
   end
 
