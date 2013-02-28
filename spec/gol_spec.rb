@@ -87,6 +87,10 @@ describe 'GameOfLife' do
       seed = [[true, true, true],[false, false, false],[false, false, false]]
       GameOfLife.new(seed).will_live?(1,1).must_equal true
     end
+
+    it 'will return an enumerator of all cells' do
+      @gol1x1.to_a.must_equal @gol1x1.frame.flatten
+    end
   end
 
   describe 'when evolving' do

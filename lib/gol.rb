@@ -5,6 +5,10 @@ class Cell
     @x, @y, @state = x, y, state
   end
 
+  def ==(other)
+    @x == other.x and @y == other.y and @state == other.state
+  end
+
   def alive?
     @state
   end
@@ -16,6 +20,7 @@ end
 
 class GameOfLife
   attr_reader :generation, :frame
+  include Enumerable
 
   def initialize(seed, generation = 0)
     raise ArgumentError unless seed.is_a?(Array)
@@ -31,6 +36,10 @@ class GameOfLife
 
   def value
     @frame.map { |row| row.map { |cell| cell.alive? } }
+  end
+
+  def each
+    @frame.each { |row| row.each { |cell| yield cell } }
   end
 
   def evolve
