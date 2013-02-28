@@ -16,6 +16,14 @@ class Cell
   def alive=(state)
     @state = state
   end
+
+  def will_live?
+    @will_live
+  end
+
+  def will_live=(state)
+    @will_live = state
+  end
 end
 
 class GameOfLife
@@ -42,13 +50,9 @@ class GameOfLife
     @frame.each { |row| row.each { |cell| yield cell } }
   end
 
-  def evolve
-    GameOfLife.new(compute_next_frame.map { |row| row.map { |c| c.alive? } }, @generation + 1)
-  end
-
   def evolve!
     @generation += 1
-    @frame = compute_next_frame
+    compute_next_frame
     self
   end
 
@@ -92,13 +96,10 @@ class GameOfLife
   private
 
   def compute_next_frame
-    next_frame = Array.new(@frame.size) { Array.new(@frame.first.size) }
-    x_size.times do |x|
-      y_size.times do |y|
-        next_frame[y][x] = Cell.new(x, y, will_live?(x, y))
-      end
+    self.each do |cell|
+      cell.will_live = will_live?(cell.x, cell.y)
     end
-    next_frame
+    self.each { |cell| cell.alive=cell.will_live?}
   end
 
 end
